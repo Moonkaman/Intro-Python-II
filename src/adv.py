@@ -1,10 +1,42 @@
 from room import Room
+from player import Player
+from item import Item
+import random
 
 # Declare all the rooms
 
+items = (
+    Item('Sword', 'Your pokey guy'),
+    Item('Spatula', 'For making krabby patties'),
+    Item('Dice', 'Rolls a number between 1-6'),
+    Item('Guitar', 'A mythical creation said to produce musical notes'),
+    Item('Gold coin', 'A small circle of gold used as currency'),
+    Item('Mouse', 'Sqeaky little guy running around looking for cheese'),
+    Item('Key', 'Who know what this could open'),
+    Item('Apple juice', 'Old moldy box of apple juice'),
+    Item('Pebble', 'Tiny little pebble'),
+    Item('Skull', 'Some poor soul from the past'),
+    Item('Hat', 'Looks like a wizard hat'),
+    Item('Meat', 'Just your run of the mill chunk of meat probably fell off of somethething'),
+    Item('Potion', 'Its red who knows what it does'),
+    Item('Bug', 'A small black beetle'),
+    Item('Water skin', 'A pouch used to carry water'),
+    Item('Stick', 'Small crooked looking stick'),
+    Item('Cardboard sword', 'Probably not very useful'),
+    Item('Cheese', 'A perfect looking wedge of yellow cheese'),
+)
+
+
+def generate_items(num):
+    room_items = []
+    for i in range(num):
+        room_items.append(items[random.randint(0, len(items)-1)])
+    return room_items
+
+
 room = {
     'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons"),
+                     "North of you, the cave mount beckons", generate_items(3)),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
 passages run north and east."""),
@@ -21,7 +53,6 @@ chamber! Sadly, it has already been completely emptied by
 earlier adventurers. The only exit is to the south."""),
 }
 
-
 # Link rooms together
 
 room['outside'].n_to = room['foyer']
@@ -37,7 +68,18 @@ room['treasure'].s_to = room['narrow']
 # Main
 #
 
+room['outside'].show_items()
+
 # Make a new player object that is currently in the 'outside' room.
+player = Player(room['outside'])
+
+
+def move_direction(current_room, dir):
+    attr = dir + '_to'
+    if hasattr(current_room, attr):
+        player.set_current_room(getattr(current_room, attr))
+    else:
+        print("Can't go there.")
 
 # Write a loop that:
 #
@@ -49,3 +91,15 @@ room['treasure'].s_to = room['narrow']
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+
+
+while True:
+    print(player.current_room)
+    # player.current_room.show_items()
+    user_input = input('> ').lower().split()
+    if len(user_input) == 1:
+        fi = user_input[0][0]
+        if fi == 'q':
+            break
+        elif fi == 'n' or fi == 'e' or fi == 's' or fi == 'w':
+            move_direction(player.current_room, fi)
