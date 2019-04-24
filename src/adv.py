@@ -92,6 +92,7 @@ def move_direction(current_room, dir):
 
 
 while True:
+    print('***Type help for a list of commands***')
     print(player.current_room)
     user_input = input('\n>>> ').lower().split()
     if len(user_input) == 1:
@@ -103,6 +104,17 @@ while True:
             move_direction(player.current_room, fi)
         elif fi == 'i':
             player.show_inventory()
+        elif fi == 'h':
+            print('\n> You can move with [n]orth, [e]ast, [s]outh, [w]est')
+            print('> You can see items in the room with "show items"')
+            print(
+                '> You can pickup an item in the room with "get [item name]"')
+            print('> You can see your inventory with [i]nventory')
+            print(
+                '> You can drop items in your inventory with "drop [item name]"')
+            print(
+                '> You can use items in your inventory with "use [item name]"\n')
+
     if len(user_input) == 2:
         if user_input[0] == 'show':
             if user_input[1] == 'items':
