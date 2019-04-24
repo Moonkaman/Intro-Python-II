@@ -15,6 +15,6 @@ class Room:
         if len(self.items) == 0:
             print('There are no items in this room.')
         else:
-            print(f'Items in {self.name}:')
+            print(f'\nItems in {self.name}:')
             for item in self.items:
-                print(f'{item.name}: {item.description}')
+                print(f'> {item.name}: {item.description}')

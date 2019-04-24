@@ -10,19 +10,19 @@ items = (
     Item('Spatula', 'For making krabby patties'),
     Item('Dice', 'Rolls a number between 1-6'),
     Item('Guitar', 'A mythical creation said to produce musical notes'),
-    Item('Gold coin', 'A small circle of gold used as currency'),
+    Item('Gold_coin', 'A small circle of gold used as currency'),
     Item('Mouse', 'Sqeaky little guy running around looking for cheese'),
     Item('Key', 'Who know what this could open'),
-    Item('Apple juice', 'Old moldy box of apple juice'),
+    Item('Apple_juice', 'Old moldy box of apple juice'),
     Item('Pebble', 'Tiny little pebble'),
     Item('Skull', 'Some poor soul from the past'),
     Item('Hat', 'Looks like a wizard hat'),
     Item('Meat', 'Just your run of the mill chunk of meat probably fell off of somethething'),
     Item('Potion', 'Its red who knows what it does'),
     Item('Bug', 'A small black beetle'),
-    Item('Water skin', 'A pouch used to carry water'),
+    Item('Water_skin', 'A pouch used to carry water'),
     Item('Stick', 'Small crooked looking stick'),
-    Item('Cardboard sword', 'Probably not very useful'),
+    Item('Cardboard_sword', 'Probably not very useful'),
     Item('Cheese', 'A perfect looking wedge of yellow cheese'),
 )
 
@@ -36,21 +36,21 @@ def generate_items(num):
 
 room = {
     'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons", generate_items(3)),
+                     "North of you, the cave mount beckons", [items[2]]),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
-passages run north and east."""),
+passages run north and east.""", generate_items(random.randint(0, 5))),
 
     'overlook': Room("Grand Overlook", """A steep cliff appears before you, falling
 into the darkness. Ahead to the north, a light flickers in
-the distance, but there is no way across the chasm."""),
+the distance, but there is no way across the chasm.""", generate_items(random.randint(0, 5))),
 
     'narrow':   Room("Narrow Passage", """The narrow passage bends here from west
-to north. The smell of gold permeates the air."""),
+to north. The smell of gold permeates the air.""", generate_items(random.randint(0, 5))),
 
     'treasure': Room("Treasure Chamber", """You've found the long-lost treasure
 chamber! Sadly, it has already been completely emptied by
-earlier adventurers. The only exit is to the south."""),
+earlier adventurers. The only exit is to the south.""", generate_items(random.randint(0, 5))),
 }
 
 # Link rooms together
@@ -67,8 +67,6 @@ room['treasure'].s_to = room['narrow']
 #
 # Main
 #
-
-room['outside'].show_items()
 
 # Make a new player object that is currently in the 'outside' room.
 player = Player(room['outside'])
@@ -95,11 +93,42 @@ def move_direction(current_room, dir):
 
 while True:
     print(player.current_room)
-    # player.current_room.show_items()
-    user_input = input('> ').lower().split()
+    user_input = input('\n>>> ').lower().split()
     if len(user_input) == 1:
         fi = user_input[0][0]
         if fi == 'q':
             break
         elif fi == 'n' or fi == 'e' or fi == 's' or fi == 'w':
             move_direction(player.current_room, fi)
+        elif fi == 'i':
+            player.show_inventory()
+    if len(user_input) == 2:
+        if user_input[0] == 'show':
+            if user_input[1] == 'items':
+                player.current_room.show_items()
+
+        elif user_input[0] == 'get':
+            item = [
+                item for item in player.current_room.items if item.name.lower() == user_input[1]]
+            if item:
+                player.pickup_item(item[0])
+                print(f'You picked up {item[0].name}')
+            else:
+                print('Could not find that item in the room.')
+
+        elif user_input[0] == 'drop':
+            item = [
+                item for item in player.items if item.name.lower() == user_input[1]]
+            if item:
+                player.drop_item(item[0])
+                print(f'You dropped {item[0].name}')
+            else:
+                print('Could not find that item in your inventory')
+
+        elif user_input[0] == 'use':
+            item = [
+                item for item in player.items if item.name.lower() == user_input[1]]
+            if item:
+                item[0].use_item()
+            else:
+                print('Could not find that item in your inventory')
