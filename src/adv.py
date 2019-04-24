@@ -36,7 +36,7 @@ def generate_items(num):
 
 room = {
     'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons", [items[2]]),
+                     "North of you, the cave mount beckons", generate_items(random.randint(0, 5))),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
 passages run north and east.""", generate_items(random.randint(0, 5))),
@@ -97,6 +97,7 @@ while True:
     if len(user_input) == 1:
         fi = user_input[0][0]
         if fi == 'q':
+            print('Goodbye!')
             break
         elif fi == 'n' or fi == 'e' or fi == 's' or fi == 'w':
             move_direction(player.current_room, fi)
@@ -123,7 +124,7 @@ while True:
                 player.drop_item(item[0])
                 print(f'You dropped {item[0].name}')
             else:
-                print('Could not find that item in your inventory')
+                print(f'Could not find {user_input[1]} in your inventory')
 
         elif user_input[0] == 'use':
             item = [
@@ -131,4 +132,4 @@ while True:
             if item:
                 item[0].use_item()
             else:
-                print('Could not find that item in your inventory')
+                print(f'Could not find {user_input[1]} in your inventory')
